@@ -1,5 +1,7 @@
-
-
+#include <queue>
+#include <vector>
+#include <pair>
+#include <stdout>
 
 /*************** The Quetion **********************************************************************
 You are given a matrix of dimension M * N, where each cell in the matrix is initialized with values
@@ -21,3 +23,45 @@ next day. If it is impossible to rot every orange then simply return -1
 - Else
 -   return -1 a fresh tomamtoe is accessable 
 **************************************************************************************************/
+
+struct Index
+{
+    int row, col;
+    Index(int r, int c) : row(r), col(c) {}
+    bool operator==(const Index &other) const
+    {
+        return row == other.row && col == other.col;
+    }
+};
+
+struct IndexHash
+{
+    size_t operator()(const Index &index) const
+    {
+        return (static_cast<uint64_t>(index.row) << 32) | static_cast<uint64_t>(index.col);
+    }
+};
+
+int days_rotten(std::vector<std::vector<int>> orange_matrix)
+{
+    std::queue<*Index> next_day;
+    std::unordered_map<Index, int, IndexHash> oranges;
+    int row,col,num_rotten = 0, days = 0;
+    Index *index = nullptr;
+    for (row = 0; row < orange_matrix.size(); ++row)
+        for (col = 0; col < orange_matrix[row].size(); ++col)
+        {
+            if (orange_matrix[row][col] == 0)
+                continue;
+            index = new Index(row, col);
+            if (orange_matrix[row][col] > 1)
+                next_day.push(index);
+            oranges[*index] = orange_matrix[row][col];
+        }
+    
+    
+    while (!next_day.empty())
+    {
+
+    }
+}
