@@ -56,8 +56,50 @@ def test_triangle():
  print("Testing")
  print(triangle_path(tri))
 
+# TODO Q2: Unique Binary Search Trees
+"""
+Find the number of structurally unique binary search trees (BSTs) that can be constructed with n nodes, each with unique values. 
+Example 1: 
+Input: n = 3 
+Output: 5 
+Example 2: 
+Input: n = 1 
+Output: 1 
+"""
+
+# First I want to check if there is a pattern
+# bst(1) = 1, bst(2) = 2, bst(3) = 5, bst(4) = 14 (I was checking trees not BSTs same values though)
+# When we have 1 node it can only be the root
+# When we have 2 nodes either can be the root. The non root has one place it can go bst(2) = 2
+# When we have 3 nodes. If  we pick either the min or max value the remaining two nodes can be placed in bst(2)
+# different ways. so we have 2 * bst(2). If  we pick the root to be the median then theres only one way to put it.
+# When we have 4 nodes. If we pick either of edge values as the root then the remaining 3 nodes form the bst(3).
+# So those two nodes can give us 2 * 5 = 10 different cominations. Then if we pick one of the middle nodes it will
+# have 2 larger/smaller and 1 the other. These 2 smaller/larger form a bst(2) tf we have 2 * 2 = 4
+
+# bst(0) = 1
+# bst(1) = bst(0) = 1 * 1
+# bst(2) = bst(1) + bst(1)
+# bst(3) = bst(2) + bast(1) + bst(2) = (1 * 2) + (1 * 1) + (1 * 2)
+# bst(4) = bst(3) + bst(2) + bst(2) + bst(3) = (1 * 5) + (2 * 2) + (1 * 5)
+# bst(5) = bst(4) + bst(3) + 2 * bst(2) + bst(3) + bst(4) = (1 * 14) + (1 * 5) + (2 * 2) + (1 * 5) + (1 * 14)
+
+# dp[n] = sum(1 to n) of dp[i-1] * dp[n-i]
+
+def unique_bst(n):
+ dp = [1 for _ in range(n + 1)]
+ for i in range(1, n + 1):
+  dp[i] = sum(dp[j-1] * dp[i-j] for j in range(1,i+1))
+ return dp[-1]
+
+def test_unique_bst():
+ for i in range(7):
+  print(unique_bst(i))
+
 def main():
- test_triangle()
+ #test_triangle()
+ test_unique_bst()
+
 
 if __name__ == "__main__":
     main()
