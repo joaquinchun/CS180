@@ -96,9 +96,90 @@ def test_unique_bst():
  for i in range(7):
   print(unique_bst(i))
 
+# TODO Q3: Bursting Balloons
+"""
+You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an array nums. You are asked to burst all the balloons. 
+If you burst the ith balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out of bounds of the array, then treat it as if there is a balloon with a 1 painted on it. 
+Return the maximum coins you can collect by bursting the balloons wisely. 
+Example 1: 
+Input: nums = [3,1,5,8] 
+Output: 167 
+Explanation: 
+nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> [] 
+coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167 
+Example 2: 
+Input: nums = [1,5] 
+Output: 10 
+"""
+
+# Just a guess but I we will have either
+# dp[i] = given i balloons that most amount of coins we can get
+# dp[i][j] = given index i through j what is the most coins we can get
+# Ok I will probably need to make a 2d array
+# Should it be the value we get for popping the balloon on that index?
+# Given [3] the most we can get is 3
+# Given [3,2] we can make 9 but how would I get that
+# I would make the first row [3,2] or [3,3]
+# Then the second row we would get the value of current index * other
+# [3*2 + 2,2*3 + 3] or [the other option doesn't make sense. So we pick the max of the two
+# Should it be [3*2, 2*3] or [3*2 + 2,2*3 + 3] ill come back
+# Given [3, 1, 5]
+# 1 balloon = [3, 1, 5], # 1 pop = [3, 15, 5] This is looking at too many
+# 2 ballo0ns = [3*1 , 5*3 , 5 * 1], # 2 pop = [
+# 3 ballons = [3 + 5, 15 + 15, 5
+# if we had 2 baloons[3*1 + 1, 3*1*5 + 3 + 5, 5*1 + 5 this
+
+# [3*1 + 1, 15 + 5 , 5 + 1] = [4, 20, 5]
+# [3, , ]
+# [ ,1, ]
+# [ , ,5]
+#
+# dp[0][1] = dp[0][0] * dp[1][1] + max(3,1)
+# dp[1][2] = dp[1][1] * dp[2][2] + max(1,5)
+# [3,6, ]
+# [ ,1,10]
+# [ , ,5]
+#
+# if i pop 3 I would get 3 * 1 + 10
+# if i pop 1 I would get 3 * 1 * 5 + ]]
+#
+# Given 1 ballon max is 3 or 1 or 5 so I take 5
+# given 2 ballons max is 15 so I take 15
+#  given 3 ballons max is 15
+#
+# using the 3 1 5
+# dp[0] row is all 0
+# dp[1][0]  = 5, dp[1][1] = 5, dp[1][2] = 3
+# dp[2][0] = 5 + 5, dp[2][1] = 15 + 5, dp[2][2] = 3 + 3
+# Then lets consider popping
+# If I pop 3 I would 3 * 1 + dp[2][0]
+# if i pop 1 I would get 3 * 5 + dp[2][1]
+# If i pop 5 i would get 3 * 1 + dp [2][2]
+
+# dp[i][j] = max(dp[i][k] + dp[k][j] + balloons[i] * balloons[k] * balloons[j])
+
+def coin_balloons(balloons):
+ # Adding boundary cushions
+ balloons = [1] + balloons + [1]
+ n = len(balloons)
+ # DP table
+ dp = [[0] * n for _ in range(n)]
+
+ for gap in range(2, n):
+  for i in range(n - gap):
+   j = i + gap
+   dp[i][j] = max(dp[i][k] + dp[k][j] + balloons[i] * balloons[j] * balloons[k]
+                  for k in range(i + 1, j))
+ return dp[0][n-1]
+
+def test_balloons():
+ balloon = [3, 1, 5, 8]
+ print(coin_balloons(balloon))
+
 def main():
  #test_triangle()
- test_unique_bst()
+ #test_unique_bst()
+ test_balloons()
 
 
 if __name__ == "__main__":
